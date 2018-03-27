@@ -12,7 +12,7 @@
 int main (void)
 {
 	float monto_carga, km_recorr = 0, precioxlitro, rend, rend_promedio;
-	float mejor_rend = 1000, peor_rend = 0, km_total = 0, litro_total = 0, monto_total = 0;
+	float mejor_rend, peor_rend, km_total = 0, litro_total = 0, monto_total = 0;
 	/*se le dan esos valores al mejor y peor rendimiento para que 
 	 * haya algo con que comparar los primeros datos ingresados*/
 	/*los valores de los totales se inicializan en 0 para que al sumar
@@ -20,14 +20,24 @@ int main (void)
 	int c, hay_datos = 0;
 	/*chequeo que haya datos para procesar*/
 	
-	while (1) {
-		printf ("%s: ", MSJ_INGRESO_KM);
+	printf ("%s: ", MSJ_INGRESO_KM);
 		if (scanf ("%f", &km_recorr) != 1) {
 			fprintf (stderr, "%s: %s\n", ERROR, ERROR_DATO_INVALIDO);
 			return EXIT_FAILURE;
 		}
 		while ((c = getchar ()) != '\n' && c != EOF)
 			;
+	
+	do {
+		if (hay_datos == 1) {
+			printf ("%s: ", MSJ_INGRESO_KM);
+			if (scanf ("%f", &km_recorr) != 1) {
+				fprintf (stderr, "%s: %s\n", ERROR, ERROR_DATO_INVALIDO);
+				return EXIT_FAILURE;
+			}
+			while ((c = getchar ()) != '\n' && c != EOF)
+				;
+		}
 		/*validación de que scanf lea lo que tenga que leer, y limpieza del buffer*/
 		if (km_recorr == CARACTER_TERMINANTE)
 			break; /*si se ingresa en caracter terminante se sale del ciclo*/
@@ -65,6 +75,11 @@ int main (void)
 		 * recorridos*/
 		 
 		rend = (monto_carga / precioxlitro) * 100 / km_recorr;
+		
+		if (hay_datos == 0) {
+			mejor_rend = rend;
+			peor_rend = rend;
+		}
 		printf ("%s: %.2f\n\n", MSJ_RENDIMIENTO, rend);
 		hay_datos = 1; /*ya hay datos para procesar*/
 		
@@ -78,6 +93,8 @@ int main (void)
 		litro_total += (monto_carga / precioxlitro);
 		monto_total += monto_carga;
 	}
+	while (km_recorr != CARACTER_TERMINANTE);
+	
 	if (hay_datos == 0) 
 		printf ("%s\n", MSJ_SIN_DATOS);
 	

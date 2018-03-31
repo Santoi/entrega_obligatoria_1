@@ -70,6 +70,7 @@ int main (void)
 		if (hay_datos == 0) {
 			mejor_rend = rend;
 			peor_rend = rend;
+		/*si es el primer rendimiento calculado, se lo asigna al mejor y peor*/
 		}
 		printf ("%s: %.2f\n\n", MSJ_RENDIMIENTO, rend);
 		hay_datos = 1; /*ya hay datos para procesar*/

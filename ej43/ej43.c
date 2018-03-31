@@ -20,24 +20,15 @@ int main (void)
 	int c, hay_datos = 0;
 	/*chequeo que haya datos para procesar*/
 	
-	printf ("%s: ", MSJ_INGRESO_KM);
+	do {
+		printf ("%s: ", MSJ_INGRESO_KM);
 		if (scanf ("%f", &km_recorr) != 1) {
 			fprintf (stderr, "%s: %s\n", ERROR, ERROR_DATO_INVALIDO);
 			return EXIT_FAILURE;
 		}
 		while ((c = getchar ()) != '\n' && c != EOF)
 			;
-	
-	do {
-		if (hay_datos == 1) {
-			printf ("%s: ", MSJ_INGRESO_KM);
-			if (scanf ("%f", &km_recorr) != 1) {
-				fprintf (stderr, "%s: %s\n", ERROR, ERROR_DATO_INVALIDO);
-				return EXIT_FAILURE;
-			}
-			while ((c = getchar ()) != '\n' && c != EOF)
-				;
-		}
+		
 		/*validación de que scanf lea lo que tenga que leer, y limpieza del buffer*/
 		if (km_recorr == CARACTER_TERMINANTE)
 			break; /*si se ingresa en caracter terminante se sale del ciclo*/

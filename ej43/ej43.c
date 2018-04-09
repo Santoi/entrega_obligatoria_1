@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "data.h"
-#include "mensaje.h"
-#include "error.h"
+#include "./data.h"
+#include "./mensaje.h"
+#include "./error.h"
 
 /*
  * Alumno: Santiago Lopez
@@ -13,12 +13,11 @@ int main (void)
 {
 	float monto_carga, km_recorr = 0, precioxlitro, rend, rend_promedio;
 	float mejor_rend, peor_rend, km_total = 0, litro_total = 0, monto_total = 0;
-	/*se le dan esos valores al mejor y peor rendimiento para que 
-	 * haya algo con que comparar los primeros datos ingresados*/
-	/*los valores de los totales se inicializan en 0 para que al sumar
-	 * no se tomen por error los valores pre-guardados en memoria*/
-	int c, hay_datos = 0;
-	/*chequeo que haya datos para procesar*/
+	/* los valores de los totales se inicializan en 0 para que al sumar
+	 * no se tomen por error los valores pre-guardados en memoria */
+	int c;
+	bool_t hay_datos = FALSO;
+	/* variable para el chequeo de que haya datos para procesar */
 	
 	do {
 		printf ("%s: ", MSJ_INGRESO_KM);
@@ -29,15 +28,15 @@ int main (void)
 		while ((c = getchar ()) != '\n' && c != EOF)
 			;
 		
-		/*validación de que scanf lea lo que tenga que leer, y limpieza del buffer*/
-		if (km_recorr == CARACTER_TERMINANTE)
-			break; /*si se ingresa en caracter terminante se sale del ciclo*/
+		/* validación de que scanf lea lo que tenga que leer, y limpieza del buffer */
+		if (km_recorr == NUMERO_TERMINANTE)
+			break; /* si se ingresa en caracter terminante se sale del ciclo */
 		
 		if (km_recorr < 0) {
 			fprintf (stderr, "%s: %s\n", ERROR, ERROR_DATO_INVALIDO);
 			return EXIT_FAILURE;
 		}
-		/*aseguramiento de que los datos no sean inválidos*/
+		/* aseguramiento de que los datos no sean inválidos */
 		
 		printf ("%s: ", MSJ_INGRESO_MONTO);
 		if (scanf ("%f", &monto_carga) != 1) {
@@ -58,40 +57,42 @@ int main (void)
 		}
 		while ((c = getchar ()) != '\n' && c != EOF)
 			;
-		if (precioxlitro < 0) {
+		if (precioxlitro <= 0) {
 			fprintf (stderr, "%s: %s\n", ERROR, ERROR_DATO_INVALIDO);
 			return EXIT_FAILURE;
 		}
-		/*Se calcula la cantidad de litros de nafta cada 100km
-		 * recorridos*/
-		 
-		rend = (monto_carga / precioxlitro) * 100 / km_recorr;
+		/* el precio por litro no puede ser 0 por la division a continuacion */
 		
-		if (hay_datos == 0) {
+		/* se calcula la cantidad de litros de nafta cada una x cantidad de km
+		 * recorridos */
+		 
+		rend = (monto_carga / precioxlitro) * CANTIDAD_KM / km_recorr;
+		
+		if (hay_datos == FALSO) {
 			mejor_rend = rend;
 			peor_rend = rend;
-		/*si es el primer rendimiento calculado, se lo asigna al mejor y peor*/
+		/* si es el primer rendimiento calculado, se lo asigna al mejor y peor */
 		}
 		printf ("%s: %.2f\n\n", MSJ_RENDIMIENTO, rend);
-		hay_datos = 1; /*ya hay datos para procesar*/
+		hay_datos = VERDADERO; /* ya hay datos para procesar */
 		
-		if (mejor_rend > rend)
+		if (rend < mejor_rend)
 			mejor_rend = rend;
 			
-		if (peor_rend < rend)
+		else if (rend > peor_rend)
 			peor_rend = rend;
 			
 		km_total += km_recorr;
 		litro_total += (monto_carga / precioxlitro);
 		monto_total += monto_carga;
 	}
-	while (km_recorr != CARACTER_TERMINANTE);
+	while (km_recorr != NUMERO_TERMINANTE);
 	
-	if (hay_datos == 0) 
+	if (hay_datos == FALSO) 
 		printf ("%s\n", MSJ_SIN_DATOS);
 	
 	else {
-		rend_promedio = 100 * litro_total / km_total;
+		rend_promedio = CANTIDAD_KM * litro_total / km_total;
 		printf ("\n\n%s: %.4f\n", MSJ_RENDIMIENTO_PROMEDIO, rend_promedio);
 		printf ("%s: %.2f\n", MSJ_MEJOR_RENDIMIENTO, mejor_rend);
 		printf ("%s: %.2f\n", MSJ_PEOR_RENDIMIENTO, peor_rend);
